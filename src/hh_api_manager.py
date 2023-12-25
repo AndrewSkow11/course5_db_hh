@@ -6,7 +6,7 @@ class HhAPIManager:
     """Класс позволяет получать данные с hh.ru"""
 
     @staticmethod
-    def get_list_employers(numbers=10):
+    def get_list_employers():
         """Метод позволяет получать список работодателей"""
 
         list_of_employers = []
@@ -36,23 +36,18 @@ class HhAPIManager:
 
         for employer in data_employers_ru['items']:
             if employer['open_vacancies'] > 0:
-                print(employer)
                 list_of_employers.append(employer['id'])
 
         for employer in data_employers_uk['items']:
             if employer['open_vacancies'] > 0:
-                print(employer)
                 list_of_employers.append(employer['id'])
 
         for employer in data_employers_rb['items']:
             if employer['open_vacancies'] > 0:
-                print(employer)
                 list_of_employers.append(employer['id'])
 
-        for i in list_of_employers:
-            print(i)
-
-        print("Список компаний-работодателей сформирован ...")
+        print("Список компаний-работодателей сформирован ... "
+              "Ожидайте обработки данных ...")
         return list_of_employers
 
     def get_employer(employer_id):
@@ -77,10 +72,7 @@ class HhAPIManager:
         url = f"https://api.hh.ru/vacancies?employer_id={employer_id}"
         data_vacancies = requests.get(url, params=params).json()
 
-        print(data_vacancies)
-
         vacancies_list = []
-        print(vacancies_list)
 
         for item in data_vacancies["items"]:
             vacancy = {
@@ -93,7 +85,6 @@ class HhAPIManager:
             }
 
             if vacancy['payment'] is not None:
-                print(vacancy)
                 vacancies_list.append(vacancy)
 
             return vacancies_list

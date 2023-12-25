@@ -25,7 +25,6 @@ class DBManager:
 
         print("\nБаза данных создана и подготовлена к работе ...")
 
-
     def create_tables(self):
         conn = psycopg2.connect(host=self.host, database=self.database,
                                 user=self.user, password=self.password)
@@ -58,7 +57,8 @@ class DBManager:
         with psycopg2.connect(host=self.host, database=self.database,
                               user=self.user, password=self.password) as conn:
             with conn.cursor() as cur:
-                cur.execute(f"SELECT company_name, COUNT(vacancies_name) AS count_vacancies  "
+                cur.execute(f"SELECT company_name, COUNT(vacancies_name)"
+                            f" AS count_vacancies  "
                             f"FROM employers "
                             f"JOIN vacancies USING (employer_id) "
                             f"GROUP BY employers.company_name")
@@ -67,12 +67,13 @@ class DBManager:
         return result
 
     def get_all_vacancies(self):
-        '''Метод получает список всех вакансий с указанием названия компании,
-        названия вакансии и зарплаты и ссылки на вакансию'''
+        """Метод получает список всех вакансий с указанием названия компании,
+        названия вакансии и зарплаты и ссылки на вакансию"""
         with psycopg2.connect(host=self.host, database=self.database,
                               user=self.user, password=self.password) as conn:
             with conn.cursor() as cur:
-                cur.execute(f"SELECT employers.company_name, vacancies.vacancies_name, "
+                cur.execute(f"SELECT employers.company_name,"
+                            f" vacancies.vacancies_name, "
                             f"vacancies.payment, vacancies_url "
                             f"FROM employers "
                             f"JOIN vacancies USING (employer_id)")
@@ -80,30 +81,29 @@ class DBManager:
             conn.commit()
         return result
 
-
     def get_avg_salary(self):
-        '''Метод получает среднюю зарплату по вакансиям'''
+        """Метод получает среднюю зарплату по вакансиям"""
         with psycopg2.connect(host=self.host, database=self.database,
                               user=self.user, password=self.password) as conn:
             with conn.cursor() as cur:
-                cur.execute(f"SELECT AVG(payment) as avg_payment FROM vacancies ")
+                cur.execute(f"SELECT AVG(payment) as avg_payment"
+                            f" FROM vacancies ")
                 result = cur.fetchall()
             conn.commit()
         return result
 
-
     def get_vacancies_with_higher_salary(self):
-        '''Метод получает список всех вакансий,
-        у которых зарплата выше средней по всем вакансиям'''
+        """Метод получает список всех вакансий,
+        у которых зарплата выше средней по всем вакансиям"""
         with psycopg2.connect(host=self.host, database=self.database,
                               user=self.user, password=self.password) as conn:
             with conn.cursor() as cur:
                 cur.execute(f"SELECT * FROM vacancies "
-                            f"WHERE payment > (SELECT AVG(payment) FROM vacancies) ")
+                            f"WHERE payment > (SELECT AVG(payment)"
+                            f" FROM vacancies) ")
                 result = cur.fetchall()
             conn.commit()
         return result
-
 
     def get_vacancies_with_keyword(self, keyword):
         """Метод получает список всех вакансий,

@@ -1,24 +1,21 @@
 from tabulate import tabulate
 from src.db_manager import DBManager
 from colorama import init, Fore
-
-init(autoreset=True)
-
-print(Fore.RED + 'some red text')
-
 from src.hh_api_manager import HhAPIManager
+
+# возврат стандартного цвета в консоли
+init(autoreset=True)
 
 
 # подготовка к работе (создание базы данных и таблиц)
 db_manager = DBManager()
-# db_manager.create_database()
-# db_manager.create_tables()
+db_manager.create_database()
+db_manager.create_tables()
 
 # Создание списка работодателей
-# list_of_employers = HhAPIManager.get_list_employers()
-# print(list_of_employers)
+list_of_employers = HhAPIManager.get_list_employers()
 
-# hh = HhAPIManager.add_to_table()
+hh = HhAPIManager.add_to_table()
 
 task = input(
             f"{Fore.GREEN}Введите 1, чтобы получить список всех компаний и"
