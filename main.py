@@ -1,5 +1,11 @@
 from tabulate import tabulate
 from src.db_manager import DBManager
+from colorama import init, Fore
+
+init(autoreset=True)
+
+print(Fore.RED + 'some red text')
+
 from src.hh_api_manager import HhAPIManager
 
 
@@ -15,18 +21,27 @@ db_manager = DBManager()
 # hh = HhAPIManager.add_to_table()
 
 task = input(
-            "Введите 1, чтобы получить список всех компаний и количество вакансий у каждой компании\n"
-            "Введите 2, чтобы получить список всех вакансий с указанием названия компании, "
+            f"{Fore.GREEN}Введите 1, чтобы получить список всех компаний и"
+            f" количество вакансий у каждой компании\n"
+            
+            
+            "Введите 2, чтобы получить список всех вакансий с указанием"
+            " названия компании, "
             "названия вакансии и зарплаты и ссылки на вакансию\n"
+            
             "Введите 3, чтобы получить среднюю зарплату по вакансиям\n"
-            "Введите 4, чтобы получить список всех вакансий, у которых зарплата выше средней по всем вакансиям\n"
-            "Введите 5, чтобы получить список всех вакансий, в названии которых содержатся переданные в метод слова\n"
-            "Введите Стоп, чтобы завершить работу\n"
-            ">> "
-        )
+            
+            "Введите 4, чтобы получить список всех вакансий, "
+            "у которых зарплата выше средней по всем вакансиям\n"
+            
+            "Введите 5, чтобы получить список всех вакансий по ключевому слову"
+            "\n"
+            
+            "Введите 0, чтобы завершить работу\n"
+            f"{Fore.MAGENTA}>> ")
 
-if task == "Стоп":
-    exit()
+if task == "0":
+    exit("Программа завершена пользователем ...")
 
 elif task == '1':
     print(tabulate(db_manager.get_companies_and_vacancies_count()))
@@ -35,7 +50,7 @@ elif task == '2':
     print(tabulate(db_manager.get_all_vacancies()))
 
 elif task == '3':
-    print( tabulate( db_manager.get_avg_salary()))
+    print(tabulate(db_manager.get_avg_salary()))
 
 elif task == '4':
     print(tabulate(db_manager.get_vacancies_with_higher_salary()))
@@ -45,7 +60,7 @@ elif task == '5':
     print(tabulate(db_manager.get_vacancies_with_keyword(keyword)))
 
 else:
-    print('Неправильный запрос')
+    print(Fore.RED + 'Фатальная ошибка')
 
 
 

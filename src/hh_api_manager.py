@@ -34,7 +34,6 @@ class HhAPIManager:
         data_employers_uk = requests.get(url, params=params_for_ukraine).json()
         data_employers_rb = requests.get(url, params=params_for_belarus).json()
 
-
         for employer in data_employers_ru['items']:
             if employer['open_vacancies'] > 0:
                 print(employer)
@@ -45,16 +44,13 @@ class HhAPIManager:
                 print(employer)
                 list_of_employers.append(employer['id'])
 
-
         for employer in data_employers_rb['items']:
             if employer['open_vacancies'] > 0:
                 print(employer)
                 list_of_employers.append(employer['id'])
 
-
         for i in list_of_employers:
             print(i)
-
 
         print("Список компаний-работодателей сформирован ...")
         return list_of_employers
@@ -70,7 +66,6 @@ class HhAPIManager:
             "company_name": data_vacancies['name'],
             "open_vacancies": data_vacancies['open_vacancies']
         }
-        print(employer)
         return employer
 
     def get_vacancies(employer_id):
@@ -112,29 +107,29 @@ class HhAPIManager:
         with psycopg2.connect(host="localhost", database="hh_vacancies",
                               user="postgres", password="99-100") as conn:
             with conn.cursor() as cur:
-                cur.execute('TRUNCATE TABLE employers, vacancies RESTART IDENTITY;')
+                cur.execute('TRUNCATE TABLE employers, vacancies '
+                            'RESTART IDENTITY;')
 
                 for employer in employers_list:
                     employer_list = HhAPIManager.get_employer(employer)
-                    cur.execute('INSERT INTO employers (employer_id, company_name, open_vacancies) '
+                    cur.execute('INSERT INTO employers (employer_id,'
+                                ' company_name, open_vacancies) '
                                 'VALUES (%s, %s, %s) RETURNING employer_id',
-                                (employer_list['employer_id'], employer_list['company_name'],
+                                (employer_list['employer_id'],
+                                 employer_list['company_name'],
                                  employer_list['open_vacancies']))
 
                 for employer in employers_list:
                     vacancy_list = HhAPIManager.get_vacancies(employer)
                     for v in vacancy_list:
-                        cur.execute('INSERT INTO vacancies (vacancy_id, vacancies_name, '
-                                    'payment, requirement, vacancies_url, employer_id) '
+                        cur.execute('INSERT INTO vacancies (vacancy_id,'
+                                    ' vacancies_name, '
+                                    'payment, requirement, vacancies_url, '
+                                    'employer_id) '
                                     'VALUES (%s, %s, %s, %s, %s, %s)',
-                                    (v['vacancy_id'], v['vacancies_name'], v['payment'],
-                                     v['requirement'], v['vacancies_url'], v['employer_id']))
+                                    (v['vacancy_id'], v['vacancies_name'],
+                                     v['payment'],
+                                     v['requirement'], v['vacancies_url'],
+                                     v['employer_id']))
 
             conn.commit()
-
-# ['9140614', '5775464', '4748227', '36227', '3172102', '2757443', '3643187', '9066698', '10609539', '988247']
-
-
-# HhAPIManager.get_vacancies('1503330')
-# HhAPIManager.get_list_employers()
-# HhAPIManager.get_employer('1503330')
